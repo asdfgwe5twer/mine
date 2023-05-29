@@ -186,9 +186,9 @@ trait MapperTrait
     protected function filterExecuteAttributes(array &$data, bool $removePk = false): void
     {
         $model = new $this->model;
-        $attrs = $model->getFillable();
+        $attrs = $model->admin_fillable??null;
         foreach ($data as $name => $val) {
-            if (!in_array($name, $attrs)) {
+            if (($attrs && !in_array($name,$attrs)) || !$model->isFillable($name)) {
                 unset($data[$name]);
             }
         }

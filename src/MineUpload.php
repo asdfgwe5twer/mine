@@ -304,7 +304,9 @@ class MineUpload
      */
     public function assembleUrl(?string $path, string $filename): string
     {
-        return $this->getPath($path, true) . '/' . $filename;
+        return config('file.storage.'.$this->getMappingMode().'.schema','')
+            .config('file.storage.'.$this->getMappingMode().'.domain','').
+            $this->getPath($path, true) . '/' . $filename;
     }
 
     /**
