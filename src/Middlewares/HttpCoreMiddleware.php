@@ -35,7 +35,7 @@ class HttpCoreMiddleware extends \Hyperf\HttpServer\CoreMiddleware
             ->withHeader('Access-Control-Allow-Methods','GET,PUT,POST,DELETE,OPTIONS')
             ->withHeader('Access-Control-Allow-Credentials', 'true')
             // Headers 可以根据实际情况进行改写。
-            ->withHeader('Access-Control-Allow-Headers', 'accept-language,authorization,lang,uid,token,Keep-Alive,User-Agent,Cache-Control,Content-Type');
+            ->withHeader('Access-Control-Allow-Headers', 'accept-language,language,authorization,lang,uid,token,Keep-Alive,User-Agent,Cache-Control,Content-Type');
 
         Context::set(ResponseInterface::class, $response);
 

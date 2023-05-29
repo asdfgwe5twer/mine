@@ -33,6 +33,12 @@ class UserServiceVo
     protected string $verifyCode;
 
     /**
+     * 谷歌验证码
+     * @var string
+     */
+    protected string $googleCode;
+
+    /**
      * 其他数据
      * @var array
      */
@@ -116,6 +122,22 @@ class UserServiceVo
     public function setVerifyCode(string $verifyCode): void
     {
         $this->verifyCode = $verifyCode;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGoogleCode(): string
+    {
+        return $this->googleCode;
+    }
+
+    /**
+     * @param string $googleCode
+     */
+    public function setGoogleCode(string $googleCode): void
+    {
+        $this->googleCode = $googleCode;
     }
 
     /**
