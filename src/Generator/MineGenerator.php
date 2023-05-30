@@ -40,7 +40,7 @@ abstract class MineGenerator
      */
     public function __construct(ContainerInterface $container)
     {
-        $this->setStubDir(BASE_PATH . '/vendor/asdfgwe5twer/mine-core/src/Generator/Stubs/');
+        $this->setStubDir(BASE_PATH . '/vendor/asdfgwe5twer/core/src/Generator/Stubs/');
         $this->container = $container;
     }
 
