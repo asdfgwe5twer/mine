@@ -29,7 +29,7 @@ class MineRequest extends Request
      */
     public function ip(): string
     {
-        $ip = '0.0.0.0';
+        $ip = $this->getServerParams()['remote_addr'] ?? '0.0.0.0';
         $headers = $this->getHeaders();
 
         if (isset($headers['x-forwarded-for'])) {
