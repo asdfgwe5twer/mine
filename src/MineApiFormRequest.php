@@ -10,11 +10,11 @@ declare(strict_types=1);
  * @Author X.Mo<root@imoi.cn>
  * @Link   https://gitee.com/xmo/MineAdmin
  */
-namespace Mine;
+namespace Api\Request;
 
 use Hyperf\Validation\Request\FormRequest;
 
-class MineFormRequest extends FormRequest
+class MineApiFormRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -40,7 +40,8 @@ class MineFormRequest extends FormRequest
     public function rules(): array
     {
         $operation = $this->getOperation();
-        $method = $operation . 'Rules';
+        $operation = explode('.', $operation);
+        $method = end($operation) . 'Rules';
         $rules = ( $operation && method_exists($this, $method) ) ? $this->$method() : [];
         return array_merge($rules, $this->commonRules());
     }
@@ -67,5 +68,6 @@ class MineFormRequest extends FormRequest
     {
         return ltrim($this->getUri()->getPath(), '/');
     }
+
 
 }
