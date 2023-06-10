@@ -19,6 +19,6 @@ class MineMigrationCreator extends MigrationCreator
 
     public function stubPath(): string
     {
-        return BASE_PATH . '/vendor/asdfgwe5twer/core/src/Migrate/Stubs';
+        return BASE_PATH . '/vendor/asdfgwe5twer/core/src/Command/Migrate/Stubs';
     }
 }
