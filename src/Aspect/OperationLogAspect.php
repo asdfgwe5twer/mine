@@ -12,6 +12,7 @@
 declare(strict_types=1);
 namespace Mine\Aspect;
 
+use App\Main\Service\Common\ToolsService;
 use Mine\Interfaces\ServiceInterface\MenuServiceInterface;
 use Hyperf\Di\Annotation\Aspect;
 use Hyperf\Di\Aop\AbstractAspect;
@@ -95,7 +96,7 @@ class OperationLogAspect extends AbstractAspect
             'router' => $request->getServerParams()['path_info'],
             'protocol' => $request->getServerParams()['server_protocol'],
             'ip' => $request->ip(),
-            'ip_location' => $this->ip2region->search($request->ip()),
+            'ip_location' => ToolsService::ipToRegion($request->ip()),
             'service_name' => $data['name'] ?: $this->getOperationMenuName($data['code']),
             'request_data' => $request->all(),
             'response_code' => $data['response_code'],
