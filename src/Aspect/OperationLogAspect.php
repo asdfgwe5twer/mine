@@ -64,7 +64,18 @@ class OperationLogAspect extends AbstractAspect
         /* @var $result ResponseInterface */
         $result = $proceedingJoinPoint->process();
         $isDownload = false;
-        if (! empty($annotation->menuName) || ($annotation = $proceedingJoinPoint->getAnnotationMetadata()->method[Permission::class])) {
+        if(empty($annotation->menuName) && !isset($proceedingJoinPoint->getAnnotationMetadata()->method[Permission::class])){
+            if (!empty($result->getHeader('content-description')) && !empty($result->getHeader('content-transfer-encoding'))) {
+                $isDownload = true;
+            }
+            $evDispatcher = $this->container->get(EventDispatcherInterface::class);
+            $evDispatcher->dispatch(new Operation($this->getRequestInfo([
+                'code' => '',
+                'name' => '',
+                'response_code' => $result->getStatusCode(),
+                'response_data' => $isDownload ? '文件下载' : $result->getBody()->getContents()
+            ])));
+        }elseif (! empty($annotation->menuName) || ($annotation = $proceedingJoinPoint->getAnnotationMetadata()->method[Permission::class])) {
             if (!empty($result->getHeader('content-description')) && !empty($result->getHeader('content-transfer-encoding'))) {
                 $isDownload = true;
             }
