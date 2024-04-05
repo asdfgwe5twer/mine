@@ -46,11 +46,11 @@ trait ModelMacroTrait
                 return $this;
             }
 
-            if (!in_array('created_by', $model->getFillable())) {
+            if (!in_array($model->getDataScopeField(), $model->getFillable())) {
                 return $this;
             }
 
-            $dataScope = new class($userid, $this)
+            $dataScope = new class($userid, $this, $model)
             {
                 // 用户ID
                 protected int $userid;
@@ -61,10 +61,14 @@ trait ModelMacroTrait
                 // 数据范围用户ID列表
                 protected array $userIds = [];
 
-                public function __construct(int $userid, Builder $builder)
+                // 外部模型
+                protected mixed $model;
+
+                public function __construct(int $userid, Builder $builder, mixed $model)
                 {
                     $this->userid  = $userid;
                     $this->builder = $builder;
+                    $this->model = $model;
                 }
 
                 /**
@@ -75,7 +79,7 @@ trait ModelMacroTrait
                     $this->getUserDataScope();
                     return empty($this->userIds)
                         ? $this->builder
-                        : $this->builder->whereIn('created_by', array_unique($this->userIds));
+                        : $this->builder->whereIn($this->model->getDataScopeField(), array_unique($this->userIds));
                 }
 
                 protected function getUserDataScope(): void
@@ -128,6 +132,34 @@ trait ModelMacroTrait
                                 );
                                 $this->userIds[] = $this->userid;
                                 break;
+                            case SystemRole::DEPT_BELOW_SCOPE_BY_TABLE_DEPTID:
+                                $parentDepts = Db::table('system_user_dept')->where('user_id', $userModel->id)->pluck('dept_id')->toArray();
+                                $ids = [];
+                                foreach ($parentDepts as $deptId) {
+                                    $ids[] = SystemDept::query()
+                                        ->where(function ($query) use ($deptId) {
+                                            $query->where('id', '=', $deptId)
+                                                ->orWhere('level', 'like', $deptId . ',%')
+                                                ->orWhere('level', 'like', '%,' . $deptId)
+                                                ->orWhere('level', 'like', '%,' . $deptId . ',%');
+                                        })
+                                        ->pluck('id')
+                                        ->toArray();
+                                }
+                                $deptIds = array_merge($parentDepts, ...$ids);
+
+                                // 如果是部门单独处理 数据范围
+                                if ($this->model instanceof SystemDept) {
+                                    $this->builder = $this->builder->whereIn('id', $deptIds);
+                                    break;
+                                }
+
+                                // 本部门及子部门数据权限 以 当前表的dept_id作为条件
+                                if (!in_array('dept_id', $this->model->getFillable())) {
+                                    break;
+                                }
+
+                                $this->builder = $this->builder->whereIn('dept_id', $deptIds);
                             case SystemRole::SELF_SCOPE:
                                 $this->userIds[] = $this->userid;
                                 break;

@@ -16,6 +16,7 @@ use Hyperf\Utils\ApplicationContext;
 use Mine\Helper\LoginUser;
 use Mine\Helper\AppVerify;
 use Mine\Helper\Id;
+use Mine\Interfaces\ServiceInterface\QueueLogServiceInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 
@@ -191,14 +192,11 @@ if (! function_exists('app_verify')) {
 if (! function_exists('snowflake_id')) {
     /**
      * 生成雪花ID
-     * @param int|null $workerId
      * @return String
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    function snowflake_id(?int $workerId = null): String
+    function snowflake_id(): string
     {
-        return container()->get(Id::class)->getId($workerId);
+        return container()->get(\Hyperf\Snowflake\IdGeneratorInterface::class)->generate();
     }
 }
 
@@ -229,7 +227,7 @@ if (! function_exists('push_queue_message')) {
     function push_queue_message(QueueMessageVo $message, array $receiveUsers = []): bool
     {
         return container()
-            ->get(\App\System\Service\SystemQueueLogService::class)
+            ->get(QueueLogServiceInterface::class)
             ->pushMessage($message, $receiveUsers);
     }
 }
@@ -246,7 +244,49 @@ if (! function_exists('add_queue')) {
     function add_queue(\App\System\Vo\AmqpQueueVo $amqpQueueVo): bool
     {
         return container()
-            ->get(\App\System\Service\SystemQueueLogService::class)
+            ->get(QueueLogServiceInterface::class)
             ->addQueue($amqpQueueVo);
+    }
+}
+
+if (! function_exists('blank')) {
+    /**
+     * 判断给定的值是否为空
+     *
+     * @param  mixed  $value
+     * @return bool
+     */
+    function blank(mixed $value): bool
+    {
+        if (is_null($value)) {
+            return true;
+        }
+
+        if (is_string($value)) {
+            return trim($value) === '';
+        }
+
+        if (is_numeric($value) || is_bool($value)) {
+            return false;
+        }
+
+        if ($value instanceof Countable) {
+            return count($value) === 0;
+        }
+
+        return empty($value);
+    }
+}
+
+if (! function_exists('filled')) {
+    /**
+     * 判断给定的值是否不为空
+     *
+     * @param  mixed  $value
+     * @return bool
+     */
+    function filled(mixed $value): bool
+    {
+        return ! blank($value);
     }
 }

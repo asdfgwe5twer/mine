@@ -101,7 +101,7 @@ class MineUpload
         try {
             $this->filesystem->writeStream($path . '/' . $filename, $uploadedFile->getStream()->detach());
         } catch (\Exception $e) {
-            throw new NormalStatusException((string) $uploadedFile->getError(), 500);
+            throw new NormalStatusException((string) $e->getMessage(), 500);
         }
 
         $fileInfo = [
@@ -187,6 +187,12 @@ class MineUpload
         $filename = $this->getNewName() . '.jpg';
 
         try {
+            if (preg_match('/^\/\//', $data['url'])) {
+                $data['url'] = 'http:' . $data['url'];
+            }
+            if (! preg_match('/^(http|https):\/\//i', $data['url'])) {
+                throw new NormalStatusException('图片地址请以 http 或 https 开头', 500);
+            }
             $content = file_get_contents($data['url']);
 
             $handle = fopen($data['url'], 'rb');
@@ -343,6 +349,10 @@ class MineUpload
             '2' => 'oss',
             '3' => 'qiniu',
             '4' => 'cos',
+            '5' => 'ftp',
+            '6' => 'memory',
+            '7' => 's3',
+            '8' => 'minio',
             default => 'local',
         };
     }
