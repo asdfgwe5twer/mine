@@ -251,10 +251,7 @@ if (! function_exists('add_queue')) {
 
 if (! function_exists('blank')) {
     /**
-     * 判断给定的值是否为空
-     *
-     * @param  mixed  $value
-     * @return bool
+     * 判断给定的值是否为空.
      */
     function blank(mixed $value): bool
     {
@@ -280,10 +277,7 @@ if (! function_exists('blank')) {
 
 if (! function_exists('filled')) {
     /**
-     * 判断给定的值是否不为空
-     *
-     * @param  mixed  $value
-     * @return bool
+     * 判断给定的值是否不为空.
      */
     function filled(mixed $value): bool
     {
