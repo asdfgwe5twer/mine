@@ -157,20 +157,20 @@ class MineExecutor
                     $this->decorateRunnable($crontab, $runnable)();
                 };
                 break;
-            case self::EVAL_CRONTAB:
-                $callback = function () use ($crontab) {
-                    $runnable = function () use ($crontab) {
-                        $result = true;
-                        try {
-                            eval($crontab->getCallback());
-                        } catch (\Throwable $throwable) {
-                            $result = false;
-                        }
-                        $this->logResult($crontab, $result, isset($throwable) ? $throwable->getMessage() : '');
-                    };
-                    $this->decorateRunnable($crontab, $runnable)();
-                };
-                break;
+//            case self::EVAL_CRONTAB:
+//                $callback = function () use ($crontab) {
+//                    $runnable = function () use ($crontab) {
+//                        $result = true;
+//                        try {
+//                            eval($crontab->getCallback());
+//                        } catch (\Throwable $throwable) {
+//                            $result = false;
+//                        }
+//                        $this->logResult($crontab, $result, isset($throwable) ? $throwable->getMessage() : '');
+//                    };
+//                    $this->decorateRunnable($crontab, $runnable)();
+//                };
+//                break;
         }
         $callback && Timer::after($diff > 0 ? $diff * 1000 : 1, $callback);
 
