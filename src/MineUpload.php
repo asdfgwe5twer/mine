@@ -323,7 +323,7 @@ class MineUpload
      */
     public function getStorageMode(): int|string
     {
-        return env("UPLOAD_MODE",2);
+        return env("UPLOAD_MODE",'2');
 //        return $this->container->get(ConfigServiceInterface::class)->getConfigByKey('upload_mode')['value'] ?? 1;
     }
 
