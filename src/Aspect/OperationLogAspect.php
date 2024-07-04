@@ -101,6 +101,9 @@ class OperationLogAspect extends AbstractAspect
         $request = $this->container->get(MineRequest::class);
         $loginUser = $this->container->get(LoginUser::class);
 
+
+
+
         $operationLog = [
             'time' => date('Y-m-d H:i:s', $request->getServerParams()['request_time']),
             'method' => $request->getServerParams()['request_method'],
@@ -113,6 +116,14 @@ class OperationLogAspect extends AbstractAspect
             'response_code' => $data['response_code'],
             'response_data' => $data['response_data'],
         ];
+
+        foreach ($operationLog['request_data'] as $key => &$value){
+            if($key == "private_key"){
+                $value = "*";
+            }
+        }
+
+
         try {
             $operationLog['username'] = $loginUser->getUsername();
         } catch (\Exception $e) {
