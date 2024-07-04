@@ -121,7 +121,7 @@ class OperationLogAspect extends AbstractAspect
             $operationLog['request_data']['private_key'] = "*";
         }
 
-        $response_data = json_decode($data['response_data']);
+        $response_data = json_decode($data['response_data'],true);
         if($response_data){
             if($operationLog['router'] == "/system/user/save"){
                 $response_data['password'] = "*";
