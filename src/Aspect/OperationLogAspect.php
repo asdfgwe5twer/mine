@@ -117,10 +117,8 @@ class OperationLogAspect extends AbstractAspect
             'response_data' => $data['response_data'],
         ];
 
-        foreach ($operationLog['request_data'] as $key => &$value){
-            if($key == "private_key"){
-                $value = "*";
-            }
+        if(!empty($operationLog['request_data']['private_key'])){
+            $operationLog['request_data']['private_key'] = "*";
         }
 
 
