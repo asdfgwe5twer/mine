@@ -121,11 +121,13 @@ class OperationLogAspect extends AbstractAspect
             $operationLog['request_data']['private_key'] = "*";
         }
 
+        if($operationLog['router'] == "/system/user/save"){
+            $operationLog['request_data']['password'] = "*";
+        }
+
         $response_data = json_decode($data['response_data'],true);
         if($response_data){
-            if($operationLog['router'] == "/system/user/save"){
-                $response_data['password'] = "*";
-            }elseif($operationLog['router'] == "/system/user/initUserPassword"){
+            if($operationLog['router'] == "/system/user/initUserPassword"){
                 $response_data['message'] = "*";
             }elseif($operationLog['router'] == "/system/user/createGoogleSecret"){
                 $response_data['data']['qrCodeUrl'] = "*";
