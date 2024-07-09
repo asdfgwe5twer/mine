@@ -124,6 +124,11 @@ class OperationLogAspect extends AbstractAspect
         if($operationLog['router'] == "/system/user/save"){
             $operationLog['request_data']['password'] = "*";
         }
+        if($operationLog['router'] == "/system/user/modifyPassword"){
+            $operationLog['request_data']['oldPassword'] = "*";
+            $operationLog['request_data']['newPassword'] = "*";
+            $operationLog['request_data']['newPassword_confirmation'] = "*";
+        }
 
         $response_data = json_decode($data['response_data'],true);
         if($response_data){
