@@ -59,8 +59,8 @@ class DbQueryExecutedListener implements ListenerInterface
             }
             if (env('CONSOLE_SQL')) {
                 $this->console->info(sprintf('SQL[%s ms] %s ', $event->time, $sql));
-                $this->logger->info(sprintf('[%s] %s', $event->time, $sql));
             }
+            $this->logger->info(sprintf('[%s] %s', $event->time, $sql));
         }
     }
 }
